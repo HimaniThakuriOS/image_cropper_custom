@@ -1,6 +1,6 @@
-## 1.0.0+2
+## 1.0.0+3
 
-* modified
+* fix plugin issues
 
 ## 1.0.0+1
 
