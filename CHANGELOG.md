@@ -1,3 +1,7 @@
+## 1.0.0+2
+
+* modified
+
 ## 1.0.0+1
 
 * modified
