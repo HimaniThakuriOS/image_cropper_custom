@@ -188,13 +188,13 @@
       "languageVersion": "3.0"
     },
     {
-      "name": "image_cropper_custom_code",
+      "name": "image_cropper_custom",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-07-31T11:17:33.231938Z",
+  "generated": "2024-07-31T11:25:36.201060Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }
