@@ -122,6 +122,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "plugin_platform_interface",
+      "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///Users/himanithakur/Desktop/FLUTTERSDK/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -188,7 +194,7 @@
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-07-31T11:14:28.182618Z",
+  "generated": "2024-07-31T11:16:50.127409Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }
