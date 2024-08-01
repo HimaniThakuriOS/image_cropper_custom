@@ -1,4 +1,8 @@
-## 1.0.2
+## 1.0.2+1
+
+* add 9*16 aspect ratio
+
+* ## 1.0.2
 
 * add 9*16 aspect ratio
 
