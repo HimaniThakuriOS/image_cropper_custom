@@ -56,16 +56,34 @@
       "languageVersion": "3.2"
     },
     {
-      "name": "http",
-      "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/http-0.13.6",
+      "name": "flutter_web_plugins",
+      "rootUri": "file:///Users/himanithakur/Desktop/FLUTTERSDK/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "http",
+      "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/http-1.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "http_parser",
       "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/http_parser-4.0.2",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "image_cropper_for_web",
+      "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/image_cropper_for_web-6.0.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "image_cropper_platform_interface",
+      "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/image_cropper_platform_interface-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
     },
     {
       "name": "leak_tracker",
@@ -182,13 +200,19 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "web",
+      "rootUri": "file:///Users/himanithakur/.pub-cache/hosted/pub.dev/web-0.5.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "image_cropper_custom",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     }
   ],
-  "generated": "2024-07-31T11:54:20.326884Z",
+  "generated": "2024-08-01T07:39:35.775523Z",
   "generator": "pub",
   "generatorVersion": "3.3.0"
 }
