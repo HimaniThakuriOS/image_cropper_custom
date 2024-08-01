@@ -4,7 +4,8 @@
 
 import 'dart:async';
 
-import '../../image_cropper_platform_interface.dart';
+
+import '../image_cropper_platform_interface.dart';
 
 ///
 /// A convenient class wraps all api functions of **ImageCropper** plugin
@@ -20,25 +21,12 @@ class ImageCropper {
   ///
   /// * sourcePath: the absolute path of an image file.
   ///
-  /// * maxWidth: maximum cropped image width. Note: this field is ignored on Web.
+  /// * maxWidth: maximum cropped image width.
   ///
-  /// * maxHeight: maximum cropped image height. Note: this field is ignored on Web
+  /// * maxHeight: maximum cropped image height.
   ///
   /// * aspectRatio: controls the aspect ratio of crop bounds. If this values is set,
   /// the cropper is locked and user can't change the aspect ratio of crop bounds.
-  /// Note: this field is ignored on Web
-  ///
-  /// * aspectRatioPresets: controls the list of aspect ratios in the crop menu view.
-  /// In Android, you can set the initialized aspect ratio when starting the cropper
-  /// by setting the value of [AndroidUiSettings.initAspectRatio]. Default is a list of
-  /// [CropAspectRatioPreset.original], [CropAspectRatioPreset.square],
-  /// [CropAspectRatioPreset.ratio3x2], [CropAspectRatioPreset.ratio4x3] and
-  /// [CropAspectRatioPreset.ratio16x9].
-  /// Note: this field is ignored on Web
-  ///
-  /// * cropStyle: controls the style of crop bounds, it can be rectangle or
-  /// circle style (default is [CropStyle.rectangle]).
-  /// Note: on Web, this field can be overrided by [WebUiSettings.viewPort.type]
   ///
   /// * compressFormat: the format of result image, png or jpg (default is [ImageCompressFormat.jpg])
   ///
@@ -69,15 +57,6 @@ class ImageCropper {
     int? maxWidth,
     int? maxHeight,
     CropAspectRatio? aspectRatio,
-    List<CropAspectRatioPreset> aspectRatioPresets = const [
-      CropAspectRatioPreset.original,
-      CropAspectRatioPreset.square,
-      CropAspectRatioPreset.ratio3x2,
-      CropAspectRatioPreset.ratio4x3,
-      CropAspectRatioPreset.ratio9x16,
-      CropAspectRatioPreset.ratio16x9
-    ],
-    CropStyle cropStyle = CropStyle.rectangle,
     ImageCompressFormat compressFormat = ImageCompressFormat.jpg,
     int compressQuality = 90,
     List<PlatformUiSettings>? uiSettings,
@@ -87,8 +66,6 @@ class ImageCropper {
       maxWidth: maxWidth,
       maxHeight: maxHeight,
       aspectRatio: aspectRatio,
-      aspectRatioPresets: aspectRatioPresets,
-      cropStyle: cropStyle,
       compressFormat: compressFormat,
       compressQuality: compressQuality,
       uiSettings: uiSettings,
@@ -138,6 +115,6 @@ class ImageCropper {
   /// * [Android Activity Lifecycle](https://developer.android.com/reference/android/app/Activity.html)
   ///
   Future<CroppedFile?> recoverImage() {
-    return platform.recoverImage();    
+    return platform.recoverImage();
   }
 }

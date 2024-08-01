@@ -1,3 +1,7 @@
+## 1.0.4
+
+* add custom aspect ratio widgets
+
 ## 1.0.3
 
 * add 9*16 aspect ratio

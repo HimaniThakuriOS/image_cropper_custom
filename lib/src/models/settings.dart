@@ -6,7 +6,15 @@ import '../utils.dart';
 /// A set of preset values can be used to setup the menu of crop aspect ratio
 /// options in the cropper view.
 ///
-enum CropAspectRatioPreset {
+
+abstract class CropAspectRatioPresetData {
+  /// name should be unique
+  String get name;
+
+  (int ratioX, int ratioY)? get data;
+}
+
+enum CropAspectRatioPreset implements CropAspectRatioPresetData {
   original,
   square,
   ratio3x2,
@@ -15,19 +23,91 @@ enum CropAspectRatioPreset {
   ratio5x4,
   ratio7x5,
   ratio9x16,
-  ratio16x9
+  ratio16x9;
+
+  @override
+  String get name {
+    switch (this) {
+      case CropAspectRatioPreset.original:
+        return 'original';
+      case CropAspectRatioPreset.square:
+        return 'square';
+      case CropAspectRatioPreset.ratio3x2:
+        return '3x2';
+      case CropAspectRatioPreset.ratio4x3:
+        return '4x3';
+      case CropAspectRatioPreset.ratio5x3:
+        return '5x3';
+      case CropAspectRatioPreset.ratio5x4:
+        return '5x4';
+      case CropAspectRatioPreset.ratio7x5:
+        return '7x5';
+      case CropAspectRatioPreset.ratio9x16:
+        return '9x16';
+      case CropAspectRatioPreset.ratio16x9:
+        return '16x9';
+    }
+  }
+
+  @override
+  (int ratioX, int ratioY)? get data {
+    switch (this) {
+      case CropAspectRatioPreset.original:
+        return null;
+      case CropAspectRatioPreset.square:
+        return (1, 1);
+      case CropAspectRatioPreset.ratio3x2:
+        return (3, 2);
+      case CropAspectRatioPreset.ratio4x3:
+        return (4, 3);
+      case CropAspectRatioPreset.ratio5x3:
+        return (5, 3);
+      case CropAspectRatioPreset.ratio5x4:
+        return (5, 4);
+      case CropAspectRatioPreset.ratio7x5:
+        return (7, 5);
+      case CropAspectRatioPreset.ratio16x9:
+        return (16, 9);
+      case CropAspectRatioPreset.ratio9x16:
+        return (9, 16);
+    }
+  }
 }
 
 ///
 /// Crop style options. There're two supported styles, rectangle and circle.
 /// These style will changes the shape of crop bounds, rectangle or circle bounds.
 ///
-enum CropStyle { rectangle, circle }
+enum CropStyle {
+  rectangle,
+  circle;
+
+  String get name {
+    switch (this) {
+      case CropStyle.rectangle:
+        return 'rectangle';
+      case CropStyle.circle:
+        return 'circle';
+    }
+  }
+}
 
 ///
 /// Supported image compression formats
 ///
-enum ImageCompressFormat { jpg, png }
+enum ImageCompressFormat {
+  jpg,
+  png;
+
+  String get name {
+    switch (this) {
+      case ImageCompressFormat.jpg:
+        return 'jpg';
+      case ImageCompressFormat.png:
+        return 'png';
+    }
+  }
+}
 
 class CropAspectRatio {
   final double ratioX;
@@ -52,53 +132,6 @@ class CropAspectRatio {
 ///
 abstract class PlatformUiSettings {
   Map<String, dynamic> toMap();
-}
-
-String aspectRatioPresetName(CropAspectRatioPreset? preset) {
-  switch (preset) {
-    case CropAspectRatioPreset.original:
-      return 'original';
-    case CropAspectRatioPreset.square:
-      return 'square';
-    case CropAspectRatioPreset.ratio3x2:
-      return '3x2';
-    case CropAspectRatioPreset.ratio4x3:
-      return '4x3';
-    case CropAspectRatioPreset.ratio5x3:
-      return '5x3';
-    case CropAspectRatioPreset.ratio5x4:
-      return '5x4';
-    case CropAspectRatioPreset.ratio7x5:
-      return '7x5';
-    case CropAspectRatioPreset.ratio9x16:
-      return '9x16';
-    case CropAspectRatioPreset.ratio16x9:
-      return '16x9';
-    default:
-      return 'original';
-  }
-}
-
-String cropStyleName(CropStyle style) {
-  switch (style) {
-    case CropStyle.rectangle:
-      return 'rectangle';
-    case CropStyle.circle:
-      return 'circle';
-    default:
-      return 'rectangle';
-  }
-}
-
-String compressFormatName(ImageCompressFormat format) {
-  switch (format) {
-    case ImageCompressFormat.jpg:
-      return 'jpg';
-    case ImageCompressFormat.png:
-      return 'png';
-    default:
-      return 'jpg';
-  }
 }
 
 ///
@@ -159,9 +192,16 @@ class AndroidUiSettings extends PlatformUiSettings {
   /// set to true to hide the bottom controls (shown by default)
   final bool? hideBottomControls;
 
+  /// controls the style of crop bounds, it can be rectangle or
+  /// circle style (default is [CropStyle.rectangle]).
+  final CropStyle cropStyle;
+
+  /// controls the list of aspect ratios in the crop menu view.
+  final List<CropAspectRatioPresetData> aspectRatioPresets;
+
   /// desired aspect ratio is applied (from the list of given aspect ratio presets)
   /// when starting the cropper
-  final CropAspectRatioPreset? initAspectRatio;
+  final CropAspectRatioPresetData? initAspectRatio;
 
   AndroidUiSettings({
     this.toolbarTitle,
@@ -181,6 +221,15 @@ class AndroidUiSettings extends PlatformUiSettings {
     this.lockAspectRatio,
     this.hideBottomControls,
     this.initAspectRatio,
+    this.cropStyle = CropStyle.rectangle,
+    this.aspectRatioPresets = const [
+      CropAspectRatioPreset.original,
+      CropAspectRatioPreset.square,
+      CropAspectRatioPreset.ratio3x2,
+      CropAspectRatioPreset.ratio4x3,
+      CropAspectRatioPreset.ratio16x9,
+      CropAspectRatioPreset.ratio9x16
+    ],
   });
 
   @override
@@ -202,8 +251,18 @@ class AndroidUiSettings extends PlatformUiSettings {
         'android.show_crop_grid': this.showCropGrid,
         'android.lock_aspect_ratio': this.lockAspectRatio,
         'android.hide_bottom_controls': this.hideBottomControls,
-        'android.init_aspect_ratio':
-            aspectRatioPresetName(this.initAspectRatio),
+        'android.init_aspect_ratio': this.initAspectRatio?.name,
+        'android.crop_style': this.cropStyle.name,
+        'android.aspect_ratio_presets': aspectRatioPresets
+            .map<Map<String, dynamic>>((item) => {
+                  'name': item.name,
+                  if (item.data != null)
+                    'data': {
+                      'ratio_x': item.data!.$1,
+                      'ratio_y': item.data!.$2,
+                    },
+                })
+            .toList(),
       };
 }
 
@@ -239,6 +298,10 @@ class IOSUiSettings extends PlatformUiSettings {
   /// 90-degree segments in a clockwise direction is shown in the toolbar.
   /// (default is false)
   final bool rotateClockwiseButtonHidden;
+
+  /// Embed the presented TOCropViewController in a UINavigationController.
+  /// (default is false)
+  final bool embedInNavigationController;
 
   /// If this controller is embedded in UINavigationController its navigation bar
   /// is hidden by default. Set this property to false to show the navigation bar.
@@ -293,6 +356,13 @@ class IOSUiSettings extends PlatformUiSettings {
   /// Setting this will override the Default which is a localized string for "Cancel".
   final String? cancelButtonTitle;
 
+  /// controls the style of crop bounds, it can be rectangle or
+  /// circle style (default is [CropStyle.rectangle]).
+  final CropStyle cropStyle;
+
+  /// controls the list of aspect ratios in the crop menu view.
+  final List<CropAspectRatioPresetData> aspectRatioPresets;
+
   IOSUiSettings({
     this.minimumAspectRatio,
     this.rectX,
@@ -302,6 +372,7 @@ class IOSUiSettings extends PlatformUiSettings {
     this.showActivitySheetOnDone,
     this.showCancelConfirmationDialog = false,
     this.rotateClockwiseButtonHidden = false,
+    this.embedInNavigationController = false,
     this.hidesNavigationBar,
     this.rotateButtonsHidden = false,
     this.resetButtonHidden = false,
@@ -312,6 +383,14 @@ class IOSUiSettings extends PlatformUiSettings {
     this.title,
     this.doneButtonTitle,
     this.cancelButtonTitle,
+    this.cropStyle = CropStyle.rectangle,
+    this.aspectRatioPresets = const [
+      CropAspectRatioPreset.original,
+      CropAspectRatioPreset.square,
+      CropAspectRatioPreset.ratio3x2,
+      CropAspectRatioPreset.ratio4x3,
+      CropAspectRatioPreset.ratio16x9
+    ],
   });
 
   @override
@@ -325,6 +404,7 @@ class IOSUiSettings extends PlatformUiSettings {
         'ios.show_cancel_confirmation_dialog':
             this.showCancelConfirmationDialog,
         'ios.rotate_clockwise_button_hidden': this.rotateClockwiseButtonHidden,
+        'ios.embed_in_navigation_controller': this.embedInNavigationController,
         'ios.hides_navigation_bar': this.hidesNavigationBar,
         'ios.rotate_button_hidden': this.rotateButtonsHidden,
         'ios.reset_button_hidden': this.resetButtonHidden,
@@ -337,102 +417,232 @@ class IOSUiSettings extends PlatformUiSettings {
         'ios.title': this.title,
         'ios.done_button_title': this.doneButtonTitle,
         'ios.cancel_button_title': this.cancelButtonTitle,
+        'ios.crop_style': this.cropStyle.name,
+        'ios.aspect_ratio_presets': aspectRatioPresets
+            .map<Map<String, dynamic>>((item) => {
+                  'name': item.name,
+                  if (item.data != null)
+                    'data': {
+                      'ratio_x': item.data!.$1,
+                      'ratio_y': item.data!.$2,
+                    },
+                })
+            .toList(),
       };
 }
 
-typedef CropperDialogBuilder = Dialog Function(
+typedef WebDialogBuilder = Widget Function(
   Widget cropper,
+  void Function() initCropper,
   Future<String?> Function() crop,
   void Function(RotationAngle) rotate,
+  void Function(num) scale,
 );
 
-typedef CropperRouteBuilder = PageRoute<String> Function(
+typedef WebRouteBuilder = PageRoute<String> Function(
   Widget cropper,
+  void Function() initCropper,
   Future<String?> Function() crop,
   void Function(RotationAngle) rotate,
+  void Function(num) scale,
 );
 
-enum CropperPresentStyle { dialog, page }
+enum WebPresentStyle { dialog, page }
 
-class CroppieBoundary {
-  const CroppieBoundary({
+class CropperSize {
+  const CropperSize({
     this.width,
     this.height,
   });
 
   final int? width;
   final int? height;
-}
-
-class CroppieViewPort {
-  const CroppieViewPort({
-    this.width,
-    this.height,
-    this.type,
-  });
-
-  final int? width;
-  final int? height;
-  final String? type;
 }
 
 class WebUiSettings extends PlatformUiSettings {
-  /// The outer container of the cropper
+  /// Display size of the cropper
+  ///
   /// Default = { width: 500, height: 500 }
-  final CroppieBoundary? boundary;
+  final CropperSize? size;
 
-  /// The inner container of the coppie. The visible part of the image.
-  /// Default = { width: 400, height: 400, type: 'square' }
-  /// Valid type values:'square' 'circle'
-  final CroppieViewPort? viewPort;
+  /// Define the view mode of the cropper.
+  ///
+  /// Options:
+  ///  - 0: no restrictions
+  ///  - 1: restrict the crop box not to exceed the size of the canvas.
+  ///  - 2: restrict the minimum canvas size to fit within the container.
+  ///       If the proportions of the canvas and the container differ,
+  ///       the minimum canvas will be surrounded by extra space in one of the dimensions.
+  ///  - 3: restrict the minimum canvas size to fill fit the container.
+  ///       If the proportions of the canvas and the container are different,
+  ///       the container will not be able to fit the whole canvas in one of the dimensions.
+  ///
+  /// Default = 0
+  ///
+  /// If you set viewMode to 0, the crop box can extend outside the canvas,
+  /// while a value of 1, 2, or 3 will restrict the crop box to the size of the canvas.
+  /// viewMode of 2 or 3 will additionally restrict the canvas to the container.
+  /// There is no difference between 2 and 3 when the proportions of the canvas and the container are the same.
+  final WebViewMode? viewwMode;
 
-  /// A class of your choosing to add to the container to add custom styles to your croppie
-  /// Default = ''
-  final String? customClass;
+  /// Define the dragging mode of the cropper.
+  ///
+  /// Options:
+  ///   - 'crop': create a new crop box
+  ///   - 'move': move the canvas
+  ///   - 'none': do nothing
+  ///
+  /// Default = 'crop'
+  final WebDragMode? dragMode;
 
-  /// Enable exif orientation reading. Tells Croppie to read exif orientation from the image data and orient the image correctly before
-  /// rendering to the page.
-  /// Requires exif.js (packages/croppie_dart/lib/src/exif.js)
-  final bool? enableExif;
+  /// Define the initial aspect ratio of the crop box.
+  /// By default, it is the same as the aspect ratio of the canvas (image wrapper).
+  ///
+  /// Note: Only available when the aspectRatio option is set to NaN.
+  final num? initialAspectRatio;
 
-  /// Enable or disable support for specifying a custom orientation when binding images
+  // /// Define the fixed aspect ratio of the crop box. By default, the crop box has a free ratio.
+  // final num? aspectRatio;
+
+  /// Check if the current image is a cross-origin image.
+  ///
+  /// If so, a crossOrigin attribute will be added to the cloned image element,
+  /// and a timestamp parameter will be added to the src attribute to reload the source image to avoid browser cache error.
+  ///
+  /// Adding a crossOrigin attribute to the image element will stop adding a timestamp to the image URL
+  /// and stop reloading the image. But the request (XMLHttpRequest) to read the image data for orientation checking
+  /// will require a timestamp to bust the cache to avoid browser cache error.
+  /// You can set the checkOrientation option to false to cancel this request.
+  ///
+  /// If the value of the image's crossOrigin attribute is "use-credentials",
+  /// then the withCredentials attribute will set to true when read the image data by XMLHttpRequest.
+  ///
   /// Default = true
-  final bool? enableOrientation;
+  final bool? checkCrossOrigin;
 
-  /// Enable zooming functionality. If set to false - scrolling and pinching would not zoom.
-  /// Default = false
-  final bool? enableZoom;
-
-  /// Enable or disable support for resizing the viewport area.
-  /// Default = false
-  final bool? enableResize;
-
-  /// Restricts zoom so image cannot be smaller than viewport.
-  /// Experimental
+  /// Check the current image's Exif Orientation information.
+  /// Note that only a JPEG image may contain Exif Orientation information.
+  ///
+  /// Requires to set both the rotatable and scalable options to true at the same time.
+  ///
+  /// Note: Do not trust this all the time as some JPG images may have incorrect (non-standard) Orientation values
+  ///
   /// Default = true
-  final bool? enforceBoundary;
+  ///
+  final bool? checkOrientation;
 
-  /// Enable or disable the ability to use the mouse wheel to zoom in and out on a croppie instance
+  /// Show the black modal above the image and under the crop box.
+  ///
   /// Default = true
-  final bool? mouseWheelZoom;
+  final bool? modal;
 
-  /// Hide or Show the zoom slider.
+  /// Show the dashed lines above the crop box.
+  ///
   /// Default = true
-  final bool? showZoomer;
+  final bool? guides;
+
+  /// Show the center indicator above the crop box.
+  ///
+  /// Default = true
+  final bool? center;
+
+  /// Show the white modal above the crop box (highlight the crop box).
+  ///
+  /// Default = true
+  final bool? highlight;
+
+  /// Show the grid background of the container.
+  ///
+  /// Default = true
+  final bool? background;
+
+  /// Enable to move the image.
+  ///
+  /// Default = true
+  final bool? movable;
+
+  /// Enable to rotate the image.
+  ///
+  /// Default = true
+  final bool? rotatable;
+
+  /// Enable to scale the image.
+  ///
+  /// Default = true
+  final bool? scalable;
+
+  /// Enable to zoom the image.
+  ///
+  /// Default = true
+  final bool? zoomable;
+
+  /// Enable to zoom the image by dragging touch.
+  ///
+  /// Default = true
+  final bool? zoomOnTouch;
+
+  /// Enable to zoom the image by mouse wheeling.
+  ///
+  /// Default = true
+  final bool? zoomOnWheel;
+
+  /// Define zoom ratio when zooming the image by mouse wheeling.
+  ///
+  /// Default = 0.1
+  final num? wheelZoomRatio;
+
+  /// Enable to move the crop box by dragging.
+  ///
+  /// Default = true
+  final bool? cropBoxMovable;
+
+  /// Enable to resize the crop box by dragging.
+  ///
+  /// Default = true
+  final bool? cropBoxResizable;
+
+  /// Enable to toggle drag mode between "crop" and "move" when clicking twice on the cropper.
+  ///
+  /// Default = true
+  final bool? toggleDragModeOnDblclick;
+
+  /// The minimum width of the container.
+  ///
+  /// Default = 200
+  final num? minContainerWidth;
+
+  /// The minimum height of the container.
+  ///
+  /// Default = 100
+  final num? minContainerHeight;
+
+  /// The minimum width of the crop box.
+  ///
+  /// Note: This size is relative to the page, not the image.
+  ///
+  /// Default = 0
+  final num? minCropBoxWidth;
+
+  /// The minimum height of the crop box.
+  ///
+  /// Note: This size is relative to the page, not the image.
+  ///
+  /// Default = 0
+  final num? minCropBoxHeight;
 
   /// Presentation style of cropper, either a dialog or a page (route)
   /// Default = dialog
-  final CropperPresentStyle presentStyle;
+  final WebPresentStyle presentStyle;
 
   /// Current BuildContext
   /// The context is required to show cropper dialog or route
   final BuildContext context;
 
   /// Builder to customize the cropper [Dialog]
-  final CropperDialogBuilder? customDialogBuilder;
+  final WebDialogBuilder? customDialogBuilder;
 
   /// Builder to customize the cropper [PageRoute]
-  final CropperRouteBuilder? customRouteBuilder;
+  final WebRouteBuilder? customRouteBuilder;
 
   /// Barrier color for displayed [Dialog]
   final Color? barrierColor;
@@ -440,23 +650,43 @@ class WebUiSettings extends PlatformUiSettings {
   /// Translations to display
   final WebTranslations? translations;
 
+  /// Control UI customization
+  final WebThemeData? themeData;
+
   WebUiSettings({
     required this.context,
-    this.presentStyle = CropperPresentStyle.dialog,
+    this.presentStyle = WebPresentStyle.dialog,
     this.customDialogBuilder,
     this.customRouteBuilder,
-    this.boundary,
-    this.viewPort,
-    this.customClass,
-    this.enableExif,
-    this.enableOrientation,
-    this.enableZoom,
-    this.enableResize,
-    this.enforceBoundary,
-    this.mouseWheelZoom,
-    this.showZoomer,
-    this.barrierColor,
+    this.size,
+    this.viewwMode,
+    this.dragMode,
+    this.initialAspectRatio,
+    // this.aspectRatio,
+    this.checkCrossOrigin,
+    this.checkOrientation,
+    this.modal,
+    this.guides,
+    this.center,
+    this.highlight,
+    this.background,
+    this.movable,
+    this.rotatable,
+    this.scalable,
+    this.zoomable,
+    this.zoomOnTouch,
+    this.zoomOnWheel,
+    this.wheelZoomRatio,
+    this.cropBoxMovable,
+    this.cropBoxResizable,
+    this.toggleDragModeOnDblclick,
+    this.minContainerWidth,
+    this.minContainerHeight,
+    this.minCropBoxWidth,
+    this.minCropBoxHeight,
     this.translations,
+    this.barrierColor,
+    this.themeData,
   });
 
   @override
@@ -475,17 +705,17 @@ enum RotationAngle {
 int rotationAngleToNumber(RotationAngle angle) {
   switch (angle) {
     case RotationAngle.clockwise90:
-      return -90;
-    case RotationAngle.clockwise180:
-      return -180;
-    case RotationAngle.clockwise270:
-      return -270;
-    case RotationAngle.counterClockwise90:
       return 90;
-    case RotationAngle.counterClockwise180:
+    case RotationAngle.clockwise180:
       return 180;
-    case RotationAngle.counterClockwise270:
+    case RotationAngle.clockwise270:
       return 270;
+    case RotationAngle.counterClockwise90:
+      return -90;
+    case RotationAngle.counterClockwise180:
+      return -180;
+    case RotationAngle.counterClockwise270:
+      return -270;
   }
 }
 
@@ -510,4 +740,109 @@ class WebTranslations {
         rotateRightTooltip = 'Rotate 90 degree clockwise',
         cancelButton = 'Cancel',
         cropButton = 'Crop';
+}
+
+class WebThemeData {
+  final IconData? rotateLeftIcon;
+  final IconData? rotateRightIcon;
+  final IconData? doneIcon;
+  final IconData? backIcon;
+  final Color? rotateIconColor;
+  final double? scaleSliderMinValue;
+  final double? scaleSliderMaxValue;
+  final int? scaleSliderDivisions;
+
+  const WebThemeData({
+    this.rotateLeftIcon,
+    this.rotateRightIcon,
+    this.doneIcon,
+    this.backIcon,
+    this.rotateIconColor,
+    this.scaleSliderMinValue,
+    this.scaleSliderMaxValue,
+    this.scaleSliderDivisions,
+  });
+
+  WebThemeData copyWith({
+    IconData? rotateLeftIcon,
+    IconData? rotateRightIcon,
+    IconData? doneIcon,
+    IconData? backIcon,
+    Color? rotateIconColor,
+    double? scaleSliderMinValue,
+    double? scaleSliderMaxValue,
+    int? scaleSliderDivisions,
+  }) {
+    return WebThemeData(
+      rotateLeftIcon: rotateLeftIcon ?? this.rotateLeftIcon,
+      rotateRightIcon: rotateRightIcon ?? this.rotateRightIcon,
+      doneIcon: doneIcon ?? this.doneIcon,
+      backIcon: backIcon ?? this.backIcon,
+      rotateIconColor: rotateIconColor ?? this.rotateIconColor,
+      scaleSliderMinValue: scaleSliderMinValue ?? this.scaleSliderMinValue,
+      scaleSliderMaxValue: scaleSliderMaxValue ?? this.scaleSliderMaxValue,
+      scaleSliderDivisions: scaleSliderDivisions ?? this.scaleSliderDivisions,
+    );
+  }
+
+  @override
+  bool operator ==(covariant WebThemeData other) {
+    if (identical(this, other)) return true;
+
+    return other.rotateLeftIcon == rotateLeftIcon &&
+        other.rotateRightIcon == rotateRightIcon &&
+        other.doneIcon == doneIcon &&
+        other.rotateIconColor == rotateIconColor &&
+        other.scaleSliderMinValue == scaleSliderMinValue &&
+        other.scaleSliderMaxValue == scaleSliderMaxValue &&
+        other.scaleSliderDivisions == scaleSliderDivisions;
+  }
+
+  @override
+  int get hashCode {
+    return rotateLeftIcon.hashCode ^
+        rotateRightIcon.hashCode ^
+        doneIcon.hashCode ^
+        rotateIconColor.hashCode ^
+        scaleSliderMinValue.hashCode ^
+        scaleSliderMaxValue.hashCode ^
+        scaleSliderDivisions.hashCode;
+  }
+}
+
+enum WebDragMode {
+  crop,
+  move,
+  none;
+
+  String get value {
+    switch (this) {
+      case WebDragMode.crop:
+        return 'crop';
+      case WebDragMode.move:
+        return 'move';
+      case WebDragMode.none:
+        return 'none';
+    }
+  }
+}
+
+enum WebViewMode {
+  mode_0,
+  mode_1,
+  mode_2,
+  mode_3;
+
+  int get value {
+    switch (this) {
+      case WebViewMode.mode_0:
+        return 0;
+      case WebViewMode.mode_1:
+        return 1;
+      case WebViewMode.mode_2:
+        return 2;
+      case WebViewMode.mode_3:
+        return 3;
+    }
+  }
 }
